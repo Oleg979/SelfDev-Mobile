@@ -41,31 +41,34 @@ export default class LoginForm extends Component {
     });
 
   register = () => {
-    let { name, login, pass, repeatPass } = this.state;
-    if (login == "" || pass == "" || name == "" || repeatPass == "")
+    let { name, login, pass } = this.state;
+    if (login == "" || pass == "" || name == "")
       return this.showToast("Empty fields!");
-    if (pass != repeatPass) return this.showToast("Passwords don't matches!");
     this.showLoading();
 
-    fetch(`${config.BASE_URL}auth/register`, {
+    fetch(`https://gt99.ru/Hakaton/BackEnd/request.php`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        name: name,
-        email: login,
-        password: pass
+        method: "registration",
+        params: {
+          login,
+          password: pass,
+          email: login
+        }
       })
     })
       .then(data => data.json())
       .then(data => {
-        if (!data.auth) this.showToast(data.text);
+        console.log(data)
+         if (data.status != "ok") this.showToast(data.error.msg.RU);
         else {
           this.showToast("We've sent you email with a key. Please verify it!");
           AsyncStorage.setItem("email", login).then(() =>
             this.props.goToVerify()
-          );
+          ); 
         }
       });
   };
@@ -108,27 +111,13 @@ export default class LoginForm extends Component {
           placeholderTextColor="rgba(225,225,225,0.7)"
           secureTextEntry
         />
-        <TextInput
-          onChangeText={repeatPass => this.onChangeRepeatPass(repeatPass)}
-          style={styles.input}
-          returnKeyType="go"
-          ref={input => (this.repeatPasswordInput = input)}
-          placeholder="Repeat password"
-          placeholderTextColor="rgba(225,225,225,0.7)"
-          secureTextEntry
-        />
         <TouchableOpacity
           style={styles.buttonContainer}
           onPress={this.register}
         >
-          <Text style={styles.buttonText}>SIGN UP</Text>
+          <Text style={styles.buttonText}>Зарегистрироваться</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.buttonContainerGrey}
-          onPress={() => this.props.goToLogin()}
-        >
-          <Text style={styles.buttonText}>I ALREADY HAVE ACCOUNT</Text>
-        </TouchableOpacity>
+       
       </View>
     );
   }
@@ -141,7 +130,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    backgroundColor: "rgba(225,225,225,0.2)",
+    backgroundColor: "rgb(76,76,78)",
     borderRadius: 5,
     marginBottom: 10,
     padding: 10,
@@ -151,7 +140,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     borderRadius: 5,
-    backgroundColor: "#2980b6",
+    backgroundColor: "#ff3b1d",
     paddingVertical: 15
   },
   buttonContainerGrey: {

@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "SelfDev-mobile",
+    "name": "Hackaton",
     "description": "This project is really great.",
-    "slug": "SelfDev-mobile",
+    "slug": "hackaton",
     "privacy": "public",
     "sdkVersion": "31.0.0",
     "platforms": ["ios", "android"],

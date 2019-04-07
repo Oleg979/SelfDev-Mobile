@@ -10,7 +10,7 @@ export default class VerifyPage extends Component {
           <Image
             resizeMode="contain"
             style={styles.logo}
-            source={require("../assets/logo.png")}
+            source={require("../assets/logotip.png")}
           />
         </View>
         <View style={styles.formContainer}>
@@ -27,7 +27,7 @@ export default class VerifyPage extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#3d566e"
+    backgroundColor: "#e2e2e2"
   },
   loginContainer: {
     alignItems: "center",

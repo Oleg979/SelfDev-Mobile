@@ -14,7 +14,8 @@ import config from "../config/config";
 export default class LoginForm extends Component {
   state = {
     login: "",
-    pass: ""
+    pass: "",
+    active: false
   };
 
   onChangeLogin = login => this.setState({ login });
@@ -40,69 +41,88 @@ export default class LoginForm extends Component {
     let { login, pass } = this.state;
     if (login == "" || pass == "") return this.showToast("Empty fields!");
     this.showLoading();
-    fetch(`${config.BASE_URL}auth/login`, {
+    fetch(`https://gt99.ru/Hakaton/BackEnd/request.php`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        email: login,
-        password: pass
+        method: "auth",
+        params: {
+          login,
+          password: pass
+        }
       })
     })
       .then(data => data.json())
-      .then(data => {
-        if (!data.auth) {
-          this.showToast(data.text);
-          if (data.text == "Email is not verified") {
+      .then(data => {  
+        console.log(data)
+        if (data.status != "ok") {
+          this.showToast(data.error.msg.RU);
+          if (data.error.msg.EU == "INCORRECT_STATUS") {
             this.showToast(
               "We've sent you email with a key. Please verify it!"
             );
-            AsyncStorage.setItem("email", login).then(() =>
+            AsyncStorage.setItem("email", login).then(() => 
               this.props.goToVerify()
             );
           }
         } else {
-          AsyncStorage.setItem("token", data.token);
-          this.props.goToHome();
-        }
+          AsyncStorage.setItem("token", data.response.token);
+          this.props.goToHome(); 
+        } 
       });
   };
+
+  goToLogin = () => this.setState({active: true})
 
   render() {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-        <TextInput
-          onChangeText={login => this.onChangeLogin(login)}
-          style={styles.input}
-          autoCapitalize="none"
-          onSubmitEditing={() => this.passwordInput.focus()}
-          autoCorrect={false}
-          keyboardType="email-address"
-          returnKeyType="next"
-          placeholder="Email"
-          placeholderTextColor="rgba(225,225,225,0.7)"
-        />
+        {this.state.active && (
+          <View>
+            <TextInput
+            onChangeText={login => this.onChangeLogin(login)}
+            style={styles.input}
+            autoCapitalize="none"
+            onSubmitEditing={() => this.passwordInput.focus()}
+            autoCorrect={false}
+            keyboardType="email-address"
+            returnKeyType="next"
+            placeholder="Логин"
+            placeholderTextColor="rgba(225,225,225,0.7)"
+          />
 
-        <TextInput
-          onChangeText={pass => this.onChangePass(pass)}
-          style={styles.input}
-          returnKeyType="go"
-          ref={input => (this.passwordInput = input)}
-          placeholder="Password"
-          placeholderTextColor="rgba(225,225,225,0.7)"
-          secureTextEntry
-        />
-        <TouchableOpacity style={styles.buttonContainer} onPress={this.logIn}>
-          <Text style={styles.buttonText}>LOGIN</Text>
+          <TextInput
+            onChangeText={pass => this.onChangePass(pass)}
+            style={styles.input}
+            returnKeyType="go"
+            ref={input => (this.passwordInput = input)}
+            placeholder="Пароль"
+            placeholderTextColor="rgba(225,225,225,0.7)"
+            secureTextEntry
+          />
+          <TouchableOpacity style={styles.buttonContainerRed} onPress={this.logIn}>
+            <Text style={styles.buttonText}>Войти</Text>
+          </TouchableOpacity>
+        </View>
+        )}
+        {!this.state.active && (
+          <View>
+          <TouchableOpacity style={styles.buttonContainer}  onPress={() => this.props.goToRegister()} >
+          <Text style={styles.buttonText}>Зарегистрироваться</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.buttonContainerGrey}
-          onPress={() => this.props.goToRegister()}
+         
+          onPress={this.goToLogin}
         >
-          <Text style={styles.buttonText}>CREATE ACCOUNT</Text>
+          <Text style={styles.buttonText}>Войти</Text>
         </TouchableOpacity>
+        </View>
+        )} 
+        
       </View>
     );
   }
@@ -114,7 +134,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    backgroundColor: "rgba(225,225,225,0.2)",
+    backgroundColor: "rgb(76,76,78)",
     borderRadius: 5,
     marginBottom: 10,
     padding: 10,
@@ -124,22 +144,29 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     borderRadius: 5,
-    backgroundColor: "#2980b6",
-    paddingVertical: 15
+    backgroundColor: "#ff3b1d",
+    paddingVertical: 15,
+    
   },
   buttonContainerGrey: {
-    borderRadius: 5,
+    borderRadius: 5, 
     marginTop: 10,
-    backgroundColor: "#878484",
-    paddingVertical: 15
+    backgroundColor: "#4c4c4e",
+    paddingVertical: 15,
   },
-  buttonText: {
-    color: "#fff",
+  buttonContainerRed: {
+    borderRadius: 5, 
+    marginTop: 10,
+    backgroundColor: "#ff3b1d",
+    paddingVertical: 15,
+  },
+  buttonText: { 
+    color: "#fff",    
     textAlign: "center",
     fontWeight: "700"
   },
   loginButton: {
-    backgroundColor: "#2980b6",
+    backgroundColor: "#ff3b1d",
     color: "#fff"
   }
 });

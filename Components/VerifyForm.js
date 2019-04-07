@@ -44,21 +44,24 @@ export default class VerifyForm extends Component {
     console.log(email);
     if (token == "") return this.showToast("Empty key");
     this.showLoading();
-    fetch(`${config.BASE_URL}auth/verify`, {
+    fetch(`https://gt99.ru/Hakaton/BackEnd/request.php`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        verificationCode: token,
-        email
+        method: "confirmEmail",
+        params: {
+          code: token,
+          login: email
+        }
       })
     })
       .then(data => data.json())
       .then(data => {
-        if (!data.success) this.showToast(data.text);
+        if (data.status != "ok") this.showToast(data.error.msg.RU);
         else {
-          this.showToast("Success! Now log in");
+          this.showToast("Успешно! Теперь залогиньтесь");
           this.props.goToLogin();
         }
       });
@@ -100,7 +103,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    backgroundColor: "rgba(225,225,225,0.2)",
+    backgroundColor: "rgb(76,76,78)",
     borderRadius: 5,
     marginBottom: 10,
     padding: 10,
@@ -116,7 +119,7 @@ const styles = StyleSheet.create({
   buttonContainerGrey: {
     borderRadius: 5,
     marginTop: 10,
-    backgroundColor: "#878484",
+    backgroundColor: "#ff3b1d",
     paddingVertical: 15
   },
   buttonText: {
@@ -125,7 +128,7 @@ const styles = StyleSheet.create({
     fontWeight: "700"
   },
   loginButton: {
-    backgroundColor: "#2980b6",
+    backgroundColor: "#ff3b1d",
     color: "#fff"
   }
 });

@@ -38,7 +38,7 @@ export default class App extends Component {
         ) : this.state.page === "Register" ? (
           <RegisterPage
             goToLogin={() => this.goToLogin()}
-            goToVerify={() => this.goToVerify()}
+            goToVerify={() => this.goToVerify()} 
           />
         ) : this.state.page === "Verify" ? (
           <VerifyPage
@@ -46,9 +46,9 @@ export default class App extends Component {
             goToLogin={() => this.goToLogin()}
           />
         ) : this.state.page === "Home" ? (
-          <HomePage goToLogin={() => this.goToLogin()} />
+          <HomePage goToLogin={() => this.goToLogin()} />  
         ) : null}
       </Root>
-    );
+    );   
   }
 }

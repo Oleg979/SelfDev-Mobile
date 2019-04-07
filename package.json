@@ -14,7 +14,10 @@
     "native-base": "^2.8.1",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.0.tar.gz",
-    "react-native-pull-to-refresh": "^2.1.3"
+    "react-native-maps": "^0.23.0",
+    "react-native-material-bottom-navigation": "^1.0.2",
+    "react-native-pull-to-refresh": "^2.1.3",
+    "react-native-settings-list": "^1.8.0"
   },
   "devDependencies": {
     "babel-preset-expo": "^5.0.0"
